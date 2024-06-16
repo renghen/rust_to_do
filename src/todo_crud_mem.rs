@@ -49,7 +49,7 @@ impl TodoCrud for MemDb {
                 self.data.container.remove(i);
                 return Ok(());
             }
-            None => Err("not found".to_string()),
+            None => Err("Not Found".to_string()),
         }
     }
 
@@ -74,7 +74,7 @@ mod tests {
     use crate::todo::Status;
 
     #[test]
-    fn add_todo() {
+    fn todo_test() {
         let mut mem_db = MemDb::new();
         let title = "title test".to_string();
         let describe = "description test".to_string();
@@ -117,6 +117,11 @@ mod tests {
 
         let result_delete = mem_db.delete(1);
         assert_eq!(result_delete.is_ok(), true);
+        assert_eq!(mem_db.data.container.len(), 1);
+
+        let result_delete = mem_db.delete(1);
+        assert_eq!(result_delete.is_ok(), false);
+        assert_eq!(result_delete.unwrap_err(), "Not Found");
         assert_eq!(mem_db.data.container.len(), 1);
     }
 }
