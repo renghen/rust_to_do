@@ -41,9 +41,17 @@ impl TodoCrud for MemDb {
         return Ok(());
     }
 
-    // fn delete(&self, todo_id: u32) -> Result<(), CrudErrors> {
-    //     todo!()
-    // }
+    fn delete(&mut self, todo_id: u32) -> Result<(), String> {
+        let index = self.data.container.iter().position(|x| (*x).id == todo_id);
+
+        match index {
+            Some(i) => {
+                self.data.container.remove(i);
+                return Ok(());
+            }
+            None => Err("not found".to_string()),
+        }
+    }
 
     // fn update(&self, todo: &Todo) -> Result<&Todo, CrudErrors> {
     //     todo!()
@@ -105,7 +113,10 @@ mod tests {
         assert_eq!(result_find_2.title, title_2);
         assert_eq!(result_find_2.description, describe_2);
         assert!(matches!(result_find_2.status, Status::Cancel));
-
         assert_eq!(mem_db.data.container.len(), 2);
+
+        let result_delete = mem_db.delete(1);
+        assert_eq!(result_delete.is_ok(), true);
+        assert_eq!(mem_db.data.container.len(), 1);
     }
 }
