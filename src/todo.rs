@@ -6,6 +6,7 @@ pub enum Status {
     InProgress,
     Done,
     Cancel,
+    NoUpdate,
 }
 
 #[derive(Deserialize, Debug, Clone)]

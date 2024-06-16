@@ -5,7 +5,7 @@ pub trait TodoCrud {
 
     fn delete(&mut self, todo_id: u32) -> Result<(), String>;
 
-    // fn update(&self, todo: &Todo) -> Result<&Todo, CrudErrors>;
+    fn update(&mut self, todo: &Todo) -> Result<(), String>;
 
     fn find(&self, id: u32) -> Result<&Todo, String>;
 }

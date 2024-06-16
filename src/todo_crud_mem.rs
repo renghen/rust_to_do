@@ -1,6 +1,9 @@
 use std::borrow::Borrow;
 
-use crate::{todo::Todo, todo_crud::TodoCrud};
+use crate::{
+    todo::{Status, Todo},
+    todo_crud::TodoCrud,
+};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -53,9 +56,30 @@ impl TodoCrud for MemDb {
         }
     }
 
-    // fn update(&self, todo: &Todo) -> Result<&Todo, CrudErrors> {
-    //     todo!()
-    // }
+    fn update(&mut self, todo: &Todo) -> Result<(), String> {
+        let result =
+            self.data.container.iter().position(|x| (*x).id == todo.id);
+
+        match result {
+            Some(index) => {
+                if !todo.title.is_empty() {
+                    self.data.container[index].title = todo.title.to_owned();
+                }
+
+                if !todo.description.is_empty() {
+                    self.data.container[index].description =
+                        todo.description.to_owned();
+                }
+
+                if !(matches!(todo.status, Status::NoUpdate)) {
+                    self.data.container[index].status = todo.status.to_owned();
+                }
+
+                return Ok(());
+            }
+            None => Err("Not Found".to_string()),
+        }
+    }
 
     fn find(&self, id: u32) -> Result<&Todo, String> {
         let table = self.data.borrow();
@@ -114,6 +138,23 @@ mod tests {
         assert_eq!(result_find_2.description, describe_2);
         assert!(matches!(result_find_2.status, Status::Cancel));
         assert_eq!(mem_db.data.container.len(), 2);
+
+        let title_3 = "title updated".to_string();
+        let todo_update = Todo {
+            id: 1,
+            title: title_3.clone(),
+            description: "".to_string(),
+            status: Status::NoUpdate,
+        };
+
+        let result_update = mem_db.update(&todo_update);
+        assert_eq!(result_update.is_ok(), true);
+        assert_eq!(mem_db.data.container.len(), 2);
+        let result_update_find = mem_db.find(1);
+        assert_eq!(result_update_find.as_ref().is_ok(), true);
+        assert_eq!(result_update_find.as_ref().unwrap().title, title_3);
+        assert_eq!(result_update_find.as_ref().unwrap().description, describe);
+        assert!(matches!(result_update_find.unwrap().status, Status::Todo));
 
         let result_delete = mem_db.delete(1);
         assert_eq!(result_delete.is_ok(), true);
