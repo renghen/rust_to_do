@@ -1,9 +1,9 @@
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
-enum Status {
+pub enum Status {
     Todo,
-    In_progress,
+    InProgress,
     Done,
     Cancel,
 }
