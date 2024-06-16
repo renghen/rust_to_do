@@ -1,18 +1,11 @@
 use crate::todo::Todo;
 
-enum CrudErrors {
-    AddError(String),
-    DeleteError(String),
-    UpdateError(String),
-    FindError(String),
-}
+pub trait TodoCrud {
+    fn add(&mut self, todo: &Todo) -> Result<(), String>;
 
-trait TodoCrud {
-    fn add(&self, todo: &Todo) -> Result<&Todo, CrudErrors>;
+    // fn delete(&self, todo_id: u32) -> Result<(), CrudErrors>;
 
-    fn delete(&self, todo_id: u32) -> Result<(), CrudErrors>;
+    // fn update(&self, todo: &Todo) -> Result<&Todo, CrudErrors>;
 
-    fn update(&self, todo: &Todo) -> Result<&Todo, CrudErrors>;
-
-    fn find(&self, id: u32) -> Result<&Todo, CrudErrors>;
+    fn find(&self, id: u32) -> Result<&Todo, String>;
 }

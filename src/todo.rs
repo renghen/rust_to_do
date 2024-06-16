@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub enum Status {
     Todo,
     InProgress,
@@ -8,7 +8,7 @@ pub enum Status {
     Cancel,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Todo {
     pub id: u32,
     pub title: String,
